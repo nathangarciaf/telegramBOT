@@ -1,5 +1,5 @@
 #Script para capturar mensagens do bot no telegram e gerar logs das interações
-#Para rodar o script segue o seguinte comando: bash script_main botTOKEN (sendo botTOKEN o valor passado pelo usuário)
+#Para rodar o script segue o seguinte comando: bash script_main.sh botTOKEN (sendo botTOKEN o valor passado pelo usuário)
 all:  download_packages
 
 #Inserir o botTOKEN na variável bot_iid
