@@ -2,7 +2,7 @@
 #Para rodar o script segue o seguinte comando: bash script_main.sh botTOKEN (sendo botTOKEN o valor passado pelo usuário)
 all:  download_packages
 
-#Inserir o botTOKEN na variável bot_iid
+#Inserir o botTOKEN na variável bot_id
 bot_id="" 
 
 me_info:
