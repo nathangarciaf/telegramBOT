@@ -321,7 +321,9 @@ function process_text(){
                 execute_dae_interact
                 exit 0
         else
-                msg="$text_received para voce tambem"
+                python3 cerebro.py $text_received
+                msg=`cat resp.txt`
+                rm resp.txt
         fi
 }
 

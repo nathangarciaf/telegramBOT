@@ -1,0 +1,403 @@
+<aiml version="1.0.1" encoding="UTF-8">
+    <category>        
+        <pattern>OI</pattern>
+        <template>
+            OI, MEU NOME É <bot name="name" />, QUAL O SEU?
+        </template>
+    </category>
+
+    <category>        
+        <pattern>OLÁ</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>BOM DIA</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>BOA TARDE</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+    
+    <category>        
+        <pattern>BOA NOITE</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>BOM DIA *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>BOA TARDE *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+    
+    <category>        
+        <pattern>BOA NOITE *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    
+
+    <category>
+        <pattern>MEU NOME É *</pattern>
+        <template>
+            MUITO PRAZER, <set name="name"><star /></set>, COM O QUE EU POSSO AJUDAR?
+        </template>
+    </category>
+
+    <category>
+        <pattern>É *</pattern>
+        <that>OI MEU NOME É * QUAL O SEU</that>
+        <template>
+            <srai>MEU NOME É <star /></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUAL É MEU NOME</pattern>
+        <template>
+            SEU NOME É <get name="name" />, NÃO É?
+        </template>
+    </category>
+
+    <category>
+        <pattern>SIM</pattern>
+        <that>SEU NOME É * NÃO É</that>
+        <template>
+            ÓTIMO, O QUE DESEJA, <get name="name" />?
+        </template>
+    </category>
+
+    <category>
+        <pattern>NÃO</pattern>
+        <that>SEU NOME É * NÃO É</that>
+        <template>
+            DESCULPE, QUAL É SEU NOME DE NOVO?
+        </template>
+    </category>
+
+    <category>
+        <pattern>GOSTARIA DE COMPRAR UM LIVRO</pattern>
+        <template>
+            PERFEITO! EM QUAL LIVRO TEM INTERESSE?
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUERO COMPRAR UM LIVRO</pattern>
+        <template>
+            <srai>GOSTARIA DE COMPRAR UM LIVRO</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUERO UM LIVRO</pattern>
+        <template>
+            <srai>GOSTARIA DE COMPRAR UM LIVRO</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>UM LIVRO POR FAVOR</pattern>
+        <template>
+            <srai>GOSTARIA DE COMPRAR UM LIVRO</srai>
+        </template>
+    </category>
+
+
+
+    <category>
+        <pattern>QUAIS LIVROS TEM</pattern>
+        <template>
+            TEMOS O SEGUINTE: <system>python3 ./livros/__init__.py lista</system>
+        </template>
+    </category>
+
+    <category>
+        <pattern>TEM O QUE</pattern>
+        <template>
+            <srai>QUAIS LIVROS TEM</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>O QUE VOCES VENDEM</pattern>
+        <template>
+            <srai>QUAIS LIVROS TEM</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>O QUE TEM</pattern>
+        <template>
+            <srai>QUAIS LIVROS TEM</srai>
+        </template>
+    </category>
+    
+
+
+    <category>
+        <pattern>QUAIS LIVROS DE * TEM</pattern>
+        <template>
+            TEMOS O SEGUINTE: <system>python3 ./livros/__init__.py autor <star/></system>
+        </template>
+    </category>
+
+    <category>
+        <pattern>TEM QUAIS LIVROS DE *</pattern>
+        <template>
+            <srai>QUAIS LIVROS DE <star/> TEM</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>TEM O QUE DE *</pattern>
+        <template>
+            <srai>QUAIS LIVROS DE <star/> TEM</srai>
+        </template>
+    </category>
+
+
+
+    <category>
+        <pattern>TEM *</pattern>
+        <template>
+            <think><set name = "livro"><star/></set></think>
+            <get name="livro"/>? <system>python3 ./livros/__init__.py checa <get name="livro"/></system>
+        </template>
+    </category>
+
+    <category>
+        <pattern>VOCES TEM *</pattern>
+        <template>
+            <srai>TEM <star/></srai>
+        </template>
+    </category>
+
+
+
+    <category>
+        <pattern>QUANTO CUSTA</pattern>
+        <that>* TEMOS SIM</that>
+        <template>
+            <think><set name="preco"><system>python3 ./livros/__init__.py preco <get name="livro"/></system></set></think>
+            CUSTA <get name="preco"/>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUANTO É</pattern>
+        <that>TEM *</that>
+        <template>
+            <srai>QUANTO CUSTA</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUANTO TÁ</pattern>
+        <that>TEM *</that>
+        <template>
+            <srai>QUANTO CUSTA</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUANTO FICA</pattern>
+        <that>TEM *</that>
+        <template>
+            <srai>QUANTO CUSTA</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>CUSTA QUANTO</pattern>
+        <that>TEM *</that>
+        <template>
+            <srai>QUANTO CUSTA</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>TÁ QUANTO</pattern>
+        <that>TEM *</that>
+        <template>
+            <srai>QUANTO CUSTA</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>É QUANTO</pattern>
+        <that>TEM *</that>
+        <template>
+            <srai>QUANTO CUSTA</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>FICA QUANTO</pattern>
+        <that>TEM *</that>
+        <template>
+            <srai>QUANTO CUSTA</srai>
+        </template>
+    </category>
+
+
+
+    <category>
+        <pattern>QUANTO CUSTA *</pattern>
+        <template>
+            <think><set name="livro"><star/></set></think>
+            <think><set name="preco"><system>python3 ./livros/__init__.py preco <get name="livro"/></system></set></think>
+            CUSTA <get name="preco"/>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUANTO TÁ *</pattern>
+        <template>
+            <srai>QUANTO CUSTA <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUANTO É *</pattern>
+        <template>
+            <srai>QUANTO CUSTA <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUANTO FICA *</pattern>
+        <template>
+            <srai>QUANTO CUSTA <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>* CUSTA QUANTO</pattern>
+        <template>
+            <srai>QUANTO CUSTA <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>* TÁ QUANTO</pattern>
+        <template>
+            <srai>QUANTO CUSTA <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>* É QUANTO</pattern>
+        <template>
+            <srai>QUANTO CUSTA <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>* FICA QUANTO</pattern>
+        <template>
+            <srai>QUANTO CUSTA <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUERO COMPRAR *</pattern>
+        <template>
+            <srai>QUANTO CUSTA <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUERO *</pattern>
+        <template>
+            <srai>QUANTO CUSTA <star/></srai>
+        </template>
+    </category>
+
+
+
+    <category>
+        <pattern>PODE SER</pattern>
+        <that>CUSTA *</that>
+        <template>
+            PERFEITO, CHEGAMOS AO FIM DA COMPRA, FICOU <get name="preco"/>
+        </template>
+    </category>
+
+    <category>
+        <pattern>VOU QUERER</pattern>
+        <that>CUSTA *</that>
+        <template>
+            <srai>PODE SER</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>VOU QUERER *</pattern>
+        <that>CUSTA *</that>
+        <template>
+            <srai>PODE SER</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUERO COMPRAR</pattern>
+        <that>CUSTA *</that>
+        <template>
+            <srai>PODE SER</srai>
+        </template>
+    </category>
+
+
+
+    <category>
+        <pattern>*</pattern>
+        <that>OI MEU NOME É * QUAL O SEU</that>
+        <template>
+            <srai>MEU NOME É <star /></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <that>DESCULPE QUAL É SEU NOME DE NOVO</that>
+        <template>
+            ENTENDI, ENTÃO É <set name="name"><star /></set>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <that>PERFEITO EM QUAL LIVRO TEM INTERESSE</that>
+        <template>
+            <srai>TEM <star/></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>
+            isso é uma resposta genérica
+        </template>
+    </category>
+</aiml>
