@@ -12,7 +12,7 @@ function set_basic_config (){
 
         bot_info=`curl -s https://api.telegram.org/bot${botTOKEN}/getMe`
         name_bot="$(echo $bot_info | jq -r ".result.first_name")"
-        default_msg=$default_msg" "$name_bot
+        default_msg=$default_msg" + "$name_bot
         
         script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
         if [ ! -f "${script_dir}/next_id.txt" ]; then
@@ -58,10 +58,8 @@ function listen_usr(){
         error="$(echo $updates | jq -r ".description")"
 
         if [[ "${result}" == "[]" ]]; then
-                echo "Sem mensagem" | cat >> ${script_dir}/depura.txt
                 exit 0
         elif [[ "${error}" != "null" ]]; then
-                echo "${error}" | cat >> ${script_dir}/depura.txt
                 echo "${error}" && exit 0
         fi
 
@@ -70,7 +68,7 @@ function listen_usr(){
         define_msg_type
         next_id_update
         send_message
-        export_csv
+        #export_csv
 
         if [[ ${interaction_type} == "photo" ]]; then
                 random_op=$(($RANDOM % 3))
@@ -321,9 +319,9 @@ function process_text(){
                 execute_dae_interact
                 exit 0
         else
-                python3 cerebro.py $text_received
-                msg=`cat resp.txt`
-                rm resp.txt
+                python3 ${script_dir}/cerebro.py $user_id $text_received
+                msg=`cat resp${user_id}.txt`
+                #rm resp${user_id}.txt
         fi
 }
 
