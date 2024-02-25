@@ -1,0 +1,305 @@
+<aiml version="1.0.1" encoding="UTF-8">
+    <category>        
+        <pattern>OI</pattern>
+        <template>
+            Oi, meu nome é <bot name="name" />, qual o seu?
+        </template>
+    </category>
+
+    <category>        
+        <pattern>OI *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+     
+    <category>        
+        <pattern>COÉ</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>COÉ *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>EAE</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>OLÁ</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>OLÁ *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>OLA</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>OLA *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>EAE</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>BOM DIA</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>BOA TARDE</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+    
+    <category>        
+        <pattern>BOA NOITE</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>BOM DIA *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    <category>        
+        <pattern>BOA TARDE *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+    
+    <category>        
+        <pattern>BOA NOITE *</pattern>
+        <template>
+            <srai>OI</srai>
+        </template>
+    </category>
+
+    
+
+
+    <category>
+        <pattern>MEU NOME É *</pattern>
+        <template>
+            Muito prazer, <set name="name"><star /></set>, como posso ajudar?
+        </template>
+    </category>
+
+    <category>
+        <pattern>É *</pattern>
+        <that>OI MEU NOME É * QUAL O SEU</that>
+        <template>
+            <srai>MEU NOME É <star /></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUAL É MEU NOME</pattern>
+        <template>
+            Seu nome é <get name="name" />, NÃO É?
+        </template>
+    </category>
+
+    <category>
+        <pattern>SIM</pattern>
+        <that>SEU NOME É * NÃO É</that>
+        <template>
+            Ótimo, o que deseja, <get name="name" />?
+        </template>
+    </category>
+
+    <category>
+        <pattern>NÃO</pattern>
+        <that>SEU NOME É * NÃO É</that>
+        <template>
+            Desculpe, qual seu nome entao?
+        </template>
+    </category>
+
+
+    <category>
+        <pattern>GOSTARIA DE ME INSCREVER PARA UMA BOLSA</pattern>
+        <template>
+            Perfeito! Qual tipo de bolsa voce deseja?
+        </template>
+    </category>
+
+    <category>
+        <pattern>GOSTARIA DE PARTICIPAR DE UM PROJETO COM BOLSA</pattern>
+        <template>
+            <srai>GOSTARIA DE ME INSCREVER PARA UMA BOLSA</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUERO ME INSCREVER PARA UMA BOLSA</pattern>
+        <template>
+            <srai>GOSTARIA DE ME INSCREVER PARA UMA BOLSA</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUERO PARTICIPAR DE UM PROJETO COM BOLSA</pattern>
+        <template>
+            <srai>GOSTARIA DE ME INSCREVER PARA UMA BOLSA</srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>* INSCREVER * INICIACAO CIENTIFICA</pattern>
+        <template>
+            Você deve enviar os seguintes documentos então: Documento de identidade, comprovante de residencia...
+        </template>
+    </category>
+
+    <category>
+        <pattern>* INSCREVER * MONITORIA</pattern>
+        <template>
+            Você deve enviar os seguintes documentos então: Documento de identidade, comprovante de residencia...
+        </template>
+    </category>
+
+    <category>
+        <pattern>* INSCREVER * PROJETO DE EXTENSAO</pattern>
+        <template>
+            Você deve enviar os seguintes documentos então: Documento de identidade, comprovante de residencia...
+        </template>
+    </category>
+
+    <category>
+        <pattern>* INSCREVER * AUXILIO ESTUDANTIL</pattern>
+        <template>
+            Você deve enviar os seguintes documentos então: Documento de identidade, comprovante de residencia, comprovante de renda...
+        </template>
+    </category>
+
+
+
+
+    <category>
+        <pattern>PROJETO DE EXTENSAO</pattern>
+        <that>PERFEITO QUAL TIPO DE BOLSA VOCE DESEJA</that>
+        <template>
+            Você deve enviar os seguintes documentos então: Documento de identidade, comprovante de residencia...
+        </template>
+    </category>
+
+    <category>
+        <pattern>INICIACAO CIENTIFICA</pattern>
+        <that>PERFEITO QUAL TIPO DE BOLSA VOCE DESEJA</that>
+        <template>
+            Você deve enviar os seguintes documentos então: Documento de identidade, comprovante de residencia...
+        </template>
+    </category>
+
+    <category>
+        <pattern>MONITORIA</pattern>
+        <that>PERFEITO QUAL TIPO DE BOLSA VOCE DESEJA</that>
+        <template>
+            Você deve enviar os seguintes documentos então: Documento de identidade, comprovante de residencia...
+        </template>
+    </category>
+
+    <category>
+        <pattern>AUXILIO ESTUDANTIL</pattern>
+        <that>PERFEITO QUAL TIPO DE BOLSA VOCE DESEJA</that>
+        <template>
+            Você deve enviar os seguintes documentos então: Documento de identidade, comprovante de residencia, comprovante de renda...
+        </template>
+    </category>
+
+
+
+    <category>
+        <pattern>CHECKLIST</pattern>
+        <template>
+            Checklist
+        </template>
+    </category>
+
+    <category>
+        <pattern>GOSTARIA DE OBTER O CHECKLIST</pattern>
+        <template>
+            <srai>
+                CHECKLIST
+            </srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>QUERO MEU CHECKLIST</pattern>
+        <template>
+            <srai>
+                CHECKLIST
+            </srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>* RECEBER * CHECKLIST</pattern>
+        <template>
+            <srai>
+                CHECKLIST
+            </srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <that>OI MEU NOME É * QUAL O SEU</that>
+        <template>
+            <srai>MEU NOME É <star /></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <that>DESCULPE QUAL É SEU NOME DE NOVO</that>
+        <template>
+            Entendi, então é <set name="name"><star /></set>
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <template>
+            isso é uma resposta genérica
+        </template>
+    </category>
+</aiml>

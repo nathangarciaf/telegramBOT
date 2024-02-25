@@ -1,9 +1,14 @@
 #!/bin/bash
 botTOKEN=""
 offset="0"
-default_msg="Olá estou na versão 1.0, sou o "
 pipeline="$1"
+
+default_msg="Ola estou na versao 1.0, sou o "
 interaction_type=""
+image_type=""
+
+status_id=""
+status_resid=""
 
 function set_basic_config (){
         if [[ ${pipeline} != "" ]]; then
@@ -12,7 +17,7 @@ function set_basic_config (){
 
         bot_info=`curl -s https://api.telegram.org/bot${botTOKEN}/getMe`
         name_bot="$(echo $bot_info | jq -r ".result.first_name")"
-        default_msg=$default_msg" + "$name_bot
+        default_msg=$default_msg""$name_bot
         
         script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
         if [ ! -f "${script_dir}/next_id.txt" ]; then
@@ -29,6 +34,16 @@ function set_basic_config (){
 function config_usr_dir(){
         user_dir="${script_dir}/$user_id"
         mkdir -p ${user_dir}
+
+        brain_dir="${script_dir}/brain"
+
+        if [ ! -f "${user_dir}/doc_confirm.txt" ]; then
+                touch "${user_dir}/doc_confirm.txt"
+        fi
+
+        if [ ! -f "${user_dir}/resid_confirm.txt" ]; then
+                touch "${user_dir}/resid_confirm.txt"
+        fi
 
         user_json_dir="${user_dir}/jsons"
         mkdir -p $user_json_dir
@@ -67,21 +82,16 @@ function listen_usr(){
 
         define_msg_type
         next_id_update
-        send_message
-        #export_csv
-
         if [[ ${interaction_type} == "photo" ]]; then
-                random_op=$(($RANDOM % 3))
-                if [[ ${random_op} == 0 ]]; then
+                if [[ ${image_type} == 0 ]]; then
                         msg="A imagem enviada é um documento de identidade"
-                elif [[ ${random_op} == 1 ]];then
+                elif [[ ${image_type} == 1 ]]; then
                         msg="A imagem enviada é um comprovante de residência"
-                else
-                        msg="A imagem enviada é uma carteira de motorista"
                 fi
-                send_message
                 interaction_type=""
         fi
+        send_message
+        #export_csv
 
         done
 }
@@ -143,8 +153,14 @@ function process_photo(){
         tesseract $user_imgs_dir/${update_id}.${application} ${user_imgs_dir}/${update_id}
 
         msg=`cat "$user_imgs_dir/${update_id}.txt"`
+        msg=`echo ${msg^^}`
 
-        if [ ${msg} == " \n\ff" ]; then
+        echo ${msg}
+        if [[ $msg == *"NOME"* ]] && [[ $msg == *"CPF"* ]]; then
+                image_type="0"
+        fi
+
+        if [[ ${msg} == " \n\ff" ]]; then
                 msg="Não conseguimos detectar texto nesta imagem"
         fi
 }
@@ -182,7 +198,6 @@ function process_photo_dae(){
                                 next_id_update
                         fi
                 elif [[ "${error}" != "null" ]]; then
-                        echo "${error}" | cat >> ${script_dir}/depura.txt
                         echo "${error}" && exit 0
                 else
                         continue;
@@ -216,7 +231,6 @@ function process_document_dae(){
                                 next_id_update
                         fi
                 elif [[ "${error}" != "null" ]]; then
-                        echo "${error}" | cat >> ${script_dir}/depura.txt
                         echo "${error}" && exit 0
                 else
                         continue;
@@ -280,9 +294,6 @@ function execute_dae_interact(){
                                 msg="Essa opção não existe, por favor reenvie a opção desejada."
                                 interaction_type="inexistent_op_dae"
                         fi
-                elif [[ "${error}" != "null" ]]; then
-                        echo "${error}" | cat >> ${script_dir}/depura.txt
-                        echo "${error}" && exit 0
                 else
                         continue
                 fi
@@ -294,10 +305,10 @@ function execute_dae_interact(){
                 export_csv
 
                 if [[ ${interaction_type} == "photo" ]]; then
-                        random_op=$(($RANDOM % 3))
-                        if [[ ${random_op} == 0 ]]; then
+                        image_type=$(($RANDOM % 3))
+                        if [[ ${image_type} == 0 ]]; then
                                 msg="A imagem enviada é um documento de identidade"
-                        elif [[ ${random_op} == 1 ]];then
+                        elif [[ ${image_type} == 1 ]];then
                                 msg="A imagem enviada é um comprovante de residência"
                         else
                                 msg="A imagem enviada é uma carteira de motorista"
@@ -312,15 +323,17 @@ function process_text(){
         text_received="$(echo $result | jq -r ".[0].message.text")"
 
         if [[ "${text_received}" == "/start" ]]; then
-                echo "Iniciou a conversa" | cat >> ${script_dir}/depura.txt
                 msg="${default_msg}"
         elif [[ "${text_received}" == "DAE" ]]; then
-                echo "INTERAÇÃO COM O DAE" | cat >> ${script_dir}/depura.txt
                 execute_dae_interact
                 exit 0
         else
                 python3 ${script_dir}/cerebro.py $user_id $text_received
                 msg=`cat resp${user_id}.txt`
+                if [[ "${msg}" == "Checklist" ]]; then
+                        status_checklist_generate
+                        msg="Este é o seu checklist:\nPAIZAO"
+                fi
                 #rm resp${user_id}.txt
         fi
 }
