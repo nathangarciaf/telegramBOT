@@ -35,8 +35,6 @@ function config_usr_dir(){
         user_dir="${script_dir}/$user_id"
         mkdir -p ${user_dir}
 
-        brain_dir="${script_dir}/brain"
-
         if [ ! -f "${user_dir}/doc_confirm.txt" ]; then
                 touch "${user_dir}/doc_confirm.txt"
         fi
@@ -58,6 +56,19 @@ function config_usr_dir(){
         mkdir -p $user_vid_dir
 }
 
+function status_checklist_generate(){
+        doc_conf=`cat ${user_dir}/doc_confirm.txt`
+        resid_conf=`cat ${user_dir}/resid_confirm.txt`
+
+        if [[ ${doc_conf} != "" ]]; then
+                status_id="1"
+        fi
+
+        if [[ ${resid_conf} != "" ]]; then
+                status_resid="1"
+        fi
+}
+
 function next_id_update(){
         offset="$((update_id + 1))"
         echo $offset > ${script_dir}/next_id.txt
@@ -66,7 +77,6 @@ function next_id_update(){
 function listen_usr(){
         while true 
         do
-        #pega as mensagens que foram enviadas
         updates="$(curl -s "https://api.telegram.org/bot${botTOKEN}/getupdates?offset=${offset}")"
 
         result="$(echo $updates | jq -r ".result")"
@@ -155,9 +165,9 @@ function process_photo(){
         msg=`cat "$user_imgs_dir/${update_id}.txt"`
         msg=`echo ${msg^^}`
 
-        echo ${msg}
         if [[ $msg == *"NOME"* ]] && [[ $msg == *"CPF"* ]]; then
                 image_type="0"
+                echo "1" > ${user_dir}/doc_confirm.txt
         fi
 
         if [[ ${msg} == " \n\ff" ]]; then
@@ -173,166 +183,29 @@ function process_voice(){
         msg="por enquanto não estou processsando este tipo de mídia"
 }
 
-function process_photo_dae(){
-        while true
-        do
-                updates="$(curl -s "https://api.telegram.org/bot${botTOKEN}/getupdates?offset=${offset}")"
-
-                if [[ "${stop}" == "1" ]]; then
-                        break
-                fi
-
-                result="$(echo $updates | jq -r ".result")"
-                error="$(echo $updates | jq -r ".description")"
-
-                if [[ "${result}" != "[]" ]]; then
-                        update_id="$(echo $result | jq -r ".[0].update_id")"
-                        text_received="$(echo $result | jq -r ".[0].message.text")"
-                        photo="$(echo $result | jq -r ".[0].message.photo[-1]")"
-                        if [[ "${photo}" != "null" ]]; then
-                                process_photo
-                                stop="1"
-                        else
-                                msg="A mensagem enviada não está no formato de imagem, por favor envie uma imagem!"
-                                send_message
-                                next_id_update
-                        fi
-                elif [[ "${error}" != "null" ]]; then
-                        echo "${error}" && exit 0
-                else
-                        continue;
-                fi
-        done
-        stop="0"
-}
-
-function process_document_dae(){
-        while true
-        do
-                updates="$(curl -s "https://api.telegram.org/bot${botTOKEN}/getupdates?offset=${offset}")"
-
-                if [[ "${stop}" == "1" ]]; then
-                        break
-                fi
-
-                result="$(echo $updates | jq -r ".result")"
-                error="$(echo $updates | jq -r ".description")"
-
-                if [[ "${result}" != "[]" ]]; then
-                        update_id="$(echo $result | jq -r ".[0].update_id")"
-                        text_received="$(echo $result | jq -r ".[0].message.text")"
-                        document="$(echo $result | jq -r ".[0].message.document")"
-                        if [[ "${document}" != "null" ]]; then
-                                process_document
-                                stop="1"
-                        else
-                                msg="A mensagem enviada não é um arquivo, por favor envie um arquivo!"
-                                send_message
-                                next_id_update
-                        fi
-                elif [[ "${error}" != "null" ]]; then
-                        echo "${error}" && exit 0
-                else
-                        continue;
-                fi
-        done
-        msg="Recebemos o seu documento!"
-        stop="0"
-}
-
-function execute_dae_interact(){
-        msg="Olá! Eu sou o BOT do DAE, o que gostaria de fazer?
-        1- Enviar documento de identidade
-        2- Enviar arquivos
-        3- Sair da conversa
-        "
-        send_message
-        next_id_update
-
-        stop="0"
-        while true
-        do
-                updates="$(curl -s "https://api.telegram.org/bot${botTOKEN}/getupdates?offset=${offset}")"
-
-                if [[ ${stop} == "1" ]]; then
-                        break
-                fi
-
-                result="$(echo $updates | jq -r ".result")"
-                error="$(echo $updates | jq -r ".description")"
-
-                if [[ "${result}" != "[]" ]]; then
-                        update_id="$(echo $result | jq -r ".[0].update_id")"
-                        text_received="$(echo $result | jq -r ".[0].message.text")"
-
-                        if [[ "${text_received}" == "1" ]]; then
-                                msg="Por favor envie seu documento de identidade em formato de imagem."
-                                send_message
-                                next_id_update
-
-                                process_photo_dae
-                                send_message
-                                msg="Caso queira realizar outra operação basta digitar o número correspondente!"
-                                interaction_type="photo"
-        
-                        elif [[ "${text_received}" == "2" ]]; then
-                                msg="Por favor envie seu arquivo."
-                                send_message
-                                next_id_update
-
-                                process_document_dae
-                                send_message
-                                msg="Caso queira realizar outra operação basta digitar o número correspondente!"
-                                interaction_type="document"
-
-                        elif [[ "${text_received}" == "3" ]]; then
-                                msg="Obrigado por testar o BOT!"
-                                stop="1"
-                                interaction_type="exit_dae"
-
-                        else
-                                msg="Essa opção não existe, por favor reenvie a opção desejada."
-                                interaction_type="inexistent_op_dae"
-                        fi
-                else
-                        continue
-                fi
-
-                timestamp="$(echo $result | jq -r ".[0].message.date")"
-
-                send_message
-                next_id_update
-                export_csv
-
-                if [[ ${interaction_type} == "photo" ]]; then
-                        image_type=$(($RANDOM % 3))
-                        if [[ ${image_type} == 0 ]]; then
-                                msg="A imagem enviada é um documento de identidade"
-                        elif [[ ${image_type} == 1 ]];then
-                                msg="A imagem enviada é um comprovante de residência"
-                        else
-                                msg="A imagem enviada é uma carteira de motorista"
-                        fi
-                        send_message
-                        interaction_type=""
-                fi
-        done
-}
-
 function process_text(){
         text_received="$(echo $result | jq -r ".[0].message.text")"
 
         if [[ "${text_received}" == "/start" ]]; then
                 msg="${default_msg}"
-        elif [[ "${text_received}" == "DAE" ]]; then
-                execute_dae_interact
-                exit 0
         else
                 python3 ${script_dir}/cerebro.py $user_id $text_received
                 msg=`cat resp${user_id}.txt`
                 if [[ "${msg}" == "Checklist" ]]; then
                         status_checklist_generate
-                        msg="Este é o seu checklist:\nPAIZAO"
+                        msg="Este é o seu checklist:\nDocumento de identidade: "
+                        if [[ ${status_id} != "" ]]; then
+                                msg="${msg} V\n"
+                        else
+                                msg="${msg} X\n"
+                        fi
+
+                        msg="${msg}Comprovante de residência: "
+                        if [[ ${status_resid} != "" ]]; then
+                                msg="${msg} V"
+                        else
+                                msg="${msg} X"
+                        fi
                 fi
                 #rm resp${user_id}.txt
         fi
