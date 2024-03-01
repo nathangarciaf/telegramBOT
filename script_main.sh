@@ -1,4 +1,5 @@
 #!/bin/bash
+#AJUSTAR OS CUMPRIMENTOS PARA QUANDO O BOT JÁ SOUBER O NOME DO USUÁRIO.
 botTOKEN=""
 offset="0"
 pipeline="$1"
@@ -9,6 +10,7 @@ image_type=""
 
 status_id=""
 status_resid=""
+user_email=""
 
 function set_basic_config (){
         if [[ ${pipeline} != "" ]]; then
@@ -41,6 +43,10 @@ function config_usr_dir(){
 
         if [ ! -f "${user_dir}/resid_confirm.txt" ]; then
                 touch "${user_dir}/resid_confirm.txt"
+        fi
+
+        if [ ! -f "${user_dir}/email.txt" ]; then
+                touch "${user_dir}/email.txt"
         fi
 
         user_json_dir="${user_dir}/jsons"
@@ -94,14 +100,26 @@ function listen_usr(){
         next_id_update
         if [[ ${interaction_type} == "photo" ]]; then
                 if [[ ${image_type} == 0 ]]; then
-                        msg="A imagem enviada é um documento de identidade"
+                        user_name=`cat "${user_dir}/user_name.txt"`
+                        if [[ ${user_name} != "" ]]; then
+                                if [[ $msg == *${user_name}* ]]; then
+                                        msg="Documento de identidade recebido"
+                                else
+                                        python3 ${script_dir}/cerebro.py $user_id "NOME NAO COMPATIVEL"
+                                        msg=`cat resp${user_id}.txt`
+                                fi
+                        else
+                                python3 ${script_dir}/cerebro.py $user_id "NOME NAO INFORMADO"
+                                msg=`cat resp${user_id}.txt`
+                        fi
                 elif [[ ${image_type} == 1 ]]; then
                         msg="A imagem enviada é um comprovante de residência"
+                else
+                        msg="Tipo de documento não reconhecido"
                 fi
                 interaction_type=""
         fi
         send_message
-        #export_csv
 
         done
 }
@@ -165,7 +183,9 @@ function process_photo(){
         msg=`cat "$user_imgs_dir/${update_id}.txt"`
         msg=`echo ${msg^^}`
 
-        if [[ $msg == *"NOME"* ]] && [[ $msg == *"CPF"* ]]; then
+        echo ${msg}
+
+        if [[ $msg == *"NOME"* ]] && [[ $msg == *"CPF"* ]] && [[ $msg == *"VALIDA EM TODO O TERRITORIO NACIONAL"* ]]; then
                 image_type="0"
                 echo "1" > ${user_dir}/doc_confirm.txt
         fi
@@ -191,20 +211,52 @@ function process_text(){
         else
                 python3 ${script_dir}/cerebro.py $user_id $text_received
                 msg=`cat resp${user_id}.txt`
-                if [[ "${msg}" == "Checklist" ]]; then
-                        status_checklist_generate
-                        msg="Este é o seu checklist:\nDocumento de identidade: "
-                        if [[ ${status_id} != "" ]]; then
-                                msg="${msg} V\n"
+                if [[ "${msg}" == "CHECKLIST" ]]; then
+                        check_email
+                        if [[ ${email} != "" ]]; then
+                                status_checklist_generate
+                                msg="Este é o seu checklist:\nDocumento de identidade: "
+                                if [[ ${status_id} != "" ]]; then
+                                        msg="${msg} V\n"
+                                else
+                                        msg="${msg} X\n"
+                                fi
+
+                                msg="${msg}Comprovante de residência: "
+                                if [[ ${status_resid} != "" ]]; then
+                                        msg="${msg} V"
+                                else
+                                        msg="${msg} X"
+                                fi
                         else
-                                msg="${msg} X\n"
+                                python3 ${script_dir}/cerebro.py $user_id "EMAIL"
+                                msg=`cat resp${user_id}.txt`
                         fi
 
-                        msg="${msg}Comprovante de residência: "
-                        if [[ ${status_resid} != "" ]]; then
-                                msg="${msg} V"
+                elif [[ "${msg}" == "NOME RECEBIDO" ]]; then
+                        python3 ${script_dir}/cerebro.py $user_id "ENVIAR NOME USUARIO ATUAL"
+                        name=`cat resp${user_id}.txt`
+
+                        save_name
+
+                        python3 ${script_dir}/cerebro.py $user_id "RESPOSTA NOME"
+                        msg=`cat resp${user_id}.txt`
+
+                elif [[ "${msg}" == "NOME RECEBIDO ID" ]]; then 
+                        python3 ${script_dir}/cerebro.py $user_id "ENVIAR NOME USUARIO ATUAL"
+                        name=`cat resp${user_id}.txt`
+
+                        save_name
+
+                        python3 ${script_dir}/cerebro.py $user_id "RESPOSTA NOME ID"
+                        msg=`cat resp${user_id}.txt`
+                elif [[ "${msg}" == "CUMPRIMENTO" ]]; then
+                        if [ ! -f "${user_dir}/user_name.txt" ]; then
+                                python3 ${script_dir}/cerebro.py $user_id "CUMPRIMENTO INICIAL"
+                                msg=`cat resp${user_id}.txt`
                         else
-                                msg="${msg} X"
+                                python3 ${script_dir}/cerebro.py $user_id "CUMPRIMENTO POSTERIOR"
+                                msg=`cat resp${user_id}.txt`
                         fi
                 fi
                 #rm resp${user_id}.txt
@@ -225,6 +277,13 @@ function export_csv(){
 
         echo $timestamp","$name_bot","$user_id","$interaction_type","$text_received",OK"","${user_json_dir}/${update_id}.json \
                 >>  ${script_dir}/log.csv
+}
+
+function save_name(){
+        if [ ! -f "${user_dir}/user_name.txt" ]; then
+                touch "${user_dir}/user_name.txt"
+        fi
+        echo $name > ${user_dir}/user_name.txt
 }
 
 set_basic_config

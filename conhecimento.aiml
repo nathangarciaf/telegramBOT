@@ -2,7 +2,7 @@
     <category>        
         <pattern>OI</pattern>
         <template>
-            Oi, meu nome é <bot name="name" />, qual o seu?
+            CUMPRIMENTO
         </template>
     </category>
 
@@ -111,13 +111,27 @@
         </template>
     </category>
 
-    
+    <category>        
+        <pattern>CUMPRIMENTO INICIAL</pattern>
+        <template>
+            Oi, meu nome é <bot name="name" />, qual o seu?
+        </template>
+    </category>
+
+    <category>        
+        <pattern>CUMPRIMENTO POSTERIOR</pattern>
+        <template>
+            Oi, <get name="name" />, como posso ajudar?
+        </template>
+    </category>
+
+
 
 
     <category>
         <pattern>MEU NOME É *</pattern>
         <template>
-            Muito prazer, <set name="name"><star /></set>, como posso ajudar?
+            Seu nome é <set name="name"><star /></set>, correto?
         </template>
     </category>
 
@@ -130,9 +144,43 @@
     </category>
 
     <category>
+        <pattern>*</pattern>
+        <that>OI MEU NOME É * QUAL O SEU</that>
+        <template>
+            <srai>MEU NOME É <star /></srai>
+        </template>
+    </category>
+
+    <category>
+        <pattern>SIM</pattern>
+        <that>SEU NOME É * CORRETO</that>
+        <template>
+            NOME RECEBIDO
+        </template>
+    </category>
+
+    <category>
+        <pattern>NÃO</pattern>
+        <that>SEU NOME É * CORRETO</that>
+        <template>
+            Desculpe, qual seu nome entao?
+        </template>
+    </category>
+
+    <category>
+        <pattern>RESPOSTA NOME</pattern>
+        <template>
+            Muito prazer, <get name="name" />, como posso ajudar?
+        </template>
+    </category>
+
+
+
+    
+    <category>
         <pattern>QUAL É MEU NOME</pattern>
         <template>
-            Seu nome é <get name="name" />, NÃO É?
+            Seu nome é <get name="name" />, não é?
         </template>
     </category>
 
@@ -151,6 +199,33 @@
             Desculpe, qual seu nome entao?
         </template>
     </category>
+
+    <category>
+        <pattern>*</pattern>
+        <that>DESCULPE QUAL SEU NOME ENTAO</that>
+        <template>
+            Entendi, então é <set name="name"><star /></set>! Como posso ajudar?
+        </template>
+    </category>
+
+    <category>
+        <pattern>É *</pattern>
+        <that>DESCULPE QUAL SEU NOME ENTAO</that>
+        <template>
+            Entendi, então é <set name="name"><star /></set>! Como posso ajudar?
+        </template>
+    </category>
+
+    <category>
+        <pattern>MEU NOME É *</pattern>
+        <that>DESCULPE QUAL SEU NOME ENTAO</that>
+        <template>
+            Entendi, então é <set name="name"><star /></set>! Como posso ajudar?
+        </template>
+    </category>
+
+
+
 
 
     <category>
@@ -249,7 +324,7 @@
     <category>
         <pattern>CHECKLIST</pattern>
         <template>
-            Checklist
+            CHECKLIST
         </template>
     </category>
 
@@ -280,21 +355,137 @@
         </template>
     </category>
 
+
     <category>
-        <pattern>*</pattern>
-        <that>OI MEU NOME É * QUAL O SEU</that>
+        <pattern>EMAIL</pattern>
+        <that>Checklist</that>
         <template>
-            <srai>MEU NOME É <star /></srai>
+            Por favor diga seu email para o envio do Checklist.
+        </template>
+    </category>
+
+
+
+
+    <category>
+        <pattern>ENVIAR NOME USUARIO ATUAL</pattern>
+        <template>
+            <get name="name" />
+        </template>
+    </category>
+
+
+
+
+
+    <category>
+        <pattern>NOME NAO COMPATIVEL</pattern>
+        <template>
+            O nome registrado não esta na identidade. Seu nome é mesmo esse?
+        </template>
+    </category>
+
+    <category>
+        <pattern>SIM</pattern>
+        <that>O NOME REGISTRADO NAO ESTA NA IDENTIDADE SEU NOME E MESMO ESSE</that>
+        <template>
+            Reenvie uma identidade com esse nome então.
+        </template>
+    </category>
+
+    <category>
+        <pattern>NÃO</pattern>
+        <that>O NOME REGRISTADO NAO ESTA NA IDENTIDADE SEU NOME E MESMO ESSE</that>
+        <template>
+            Desculpe, qual seu nome?
         </template>
     </category>
 
     <category>
         <pattern>*</pattern>
-        <that>DESCULPE QUAL É SEU NOME DE NOVO</that>
+        <that>DESCULPE QUAL SEU NOME</that>
         <template>
-            Entendi, então é <set name="name"><star /></set>
+            NOME RECEBIDO ID
         </template>
     </category>
+
+    <category>
+        <pattern>É *</pattern>
+        <that>DESCULPE QUAL SEU NOME</that>
+        <template>
+            NOME RECEBIDO ID
+        </template>
+    </category>
+
+    <category>
+        <pattern>MEU NOME É *</pattern>
+        <that>DESCULPE QUAL SEU NOME</that>
+        <template>
+            NOME RECEBIDO ID
+        </template>
+    </category>
+
+    <category>
+        <pattern>RESPOSTA NOME ID</pattern>
+        <template>
+            Entendi, então é <get name="name" />! Por favor reenvie a identidade para uma nova verificação.
+        </template>
+    </category>
+
+
+    
+
+
+    <category>
+        <pattern>NOME NAO INFORMADO</pattern>
+        <template>
+            Por favor informe seu nome.
+        </template>
+    </category>
+
+    <category>
+        <pattern>*</pattern>
+        <that>POR FAVOR INFORME SEU NOME</that>
+        <template>
+            O seu nome é <set name="name"><star /></set>?
+        </template>
+    </category>
+
+    <category>
+        <pattern>É *</pattern>
+        <that>POR FAVOR INFORME SEU NOME</that>
+        <template>
+            O seu nome é <set name="name"><star /></set>?
+        </template>
+    </category>
+
+    <category>
+        <pattern>MEU NOME É *</pattern>
+        <that>POR FAVOR INFORME SEU NOME</that>
+        <template>
+            O seu nome é <set name="name"><star /></set>?
+        </template>
+    </category>
+
+    <category>
+        <pattern>SIM</pattern>
+        <that>O SEU NOME É *</that>
+        <template>
+            NOME RECEBIDO ID
+        </template>
+    </category>
+
+    <category>
+        <pattern>NÃO</pattern>
+        <that>O SEU NOME É *</that>
+        <template>
+            Desculpe, qual seu nome?
+        </template>
+    </category>
+
+
+
+
 
     <category>
         <pattern>*</pattern>
